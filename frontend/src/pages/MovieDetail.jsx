@@ -168,11 +168,11 @@ export default function MovieDetail() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Poster */}
           <div className="lg:col-span-1">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl overflow-hidden shadow-card border border-cinema-border">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl overflow-hidden shadow-card border border-cinema-border max-w-xs mx-auto lg:max-w-none">
               <img src={movie.posterUrl} alt={movie.title} className="w-full aspect-[2/3] object-cover"
                 onError={e => { e.target.src = `https://placehold.co/300x450/1a1a1a/E50914?text=${encodeURIComponent(movie.title)}`; }} />
             </motion.div>
-            <button className="btn-outline w-full mt-3 flex items-center justify-center gap-2 text-sm">
+            <button className="btn-outline w-full max-w-xs mx-auto lg:max-w-none mt-3 flex items-center justify-center gap-2 text-sm">
               <Play className="w-4 h-4 fill-current" /> Watch Trailer
             </button>
           </div>

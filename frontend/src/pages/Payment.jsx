@@ -30,6 +30,14 @@ export default function Payment() {
   const convenience = Math.round(total * 0.02);
   const grandTotal = total + convenience;
 
+  const formattedTime = new Date(show.showTime).toLocaleString([], {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   const handlePayment = async (e) => {
     e.preventDefault();
     setProcessing(true);
@@ -146,8 +154,8 @@ export default function Payment() {
                   onError={e => { e.target.src = `https://placehold.co/56x80/1a1a1a/E50914?text=${movie.title[0]}`; }} />
                 <div>
                   <p className="text-cinema-off-white font-bold text-sm">{movie.title}</p>
-                  <p className="text-cinema-muted text-xs mt-1">{show.theaterName}</p>
-                  <p className="text-cinema-muted text-xs">{show.showTime} • {show.format}</p>
+                  <p className="text-cinema-muted text-xs mt-1">{show.theaterId?.name || show.theaterName}</p>
+                  <p className="text-cinema-muted text-xs">{formattedTime} • {show.format} • {show.language}</p>
                   <p className="text-cinema-red text-xs font-semibold mt-1">{selectedSeats.join(', ')}</p>
                 </div>
               </div>

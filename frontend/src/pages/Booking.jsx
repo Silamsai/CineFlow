@@ -201,26 +201,26 @@ export default function Booking() {
         </div>
 
         {/* Booking summary sticky bar */}
-        <div className="sticky bottom-4 bg-cinema-dark border border-cinema-border rounded-2xl p-4 flex items-center justify-between shadow-card">
-          <div>
+        <div className="sticky bottom-4 bg-cinema-dark border border-cinema-border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-card">
+          <div className="text-center sm:text-left">
             {selectedSeats.length > 0 ? (
               <>
                 <p className="text-cinema-off-white font-semibold">{selectedSeats.length} seat{selectedSeats.length > 1 ? 's' : ''} selected</p>
                 <p className="text-cinema-muted text-sm">{selectedSeats.join(', ')}</p>
               </>
             ) : (
-              <p className="text-cinema-muted text-sm flex items-center gap-1"><Info className="w-4 h-4" /> Select up to 10 seats</p>
+              <p className="text-cinema-muted text-sm flex items-center justify-center sm:justify-start gap-1"><Info className="w-4 h-4" /> Select up to 10 seats</p>
             )}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
             {selectedSeats.length > 0 && (
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <p className="text-cinema-muted text-xs">Total</p>
                 <p className="text-cinema-red font-bold text-xl">₹{total}</p>
               </div>
             )}
             <button onClick={handleProceed} disabled={!selectedSeats.length}
-              className="bg-cinema-red hover:bg-cinema-red-dark text-white font-bold px-8 py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+              className="flex-1 sm:flex-initial bg-cinema-red hover:bg-cinema-red-dark text-white font-bold px-8 py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed text-center">
               Proceed to Pay
             </button>
           </div>

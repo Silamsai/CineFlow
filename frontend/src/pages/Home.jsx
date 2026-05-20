@@ -260,21 +260,22 @@ export default function Home() {
         <div className="max-w-screen-2xl mx-auto px-4 py-3 space-y-2.5">
           {/* Language row */}
           <div className="flex items-center gap-3">
-            <span className="text-cinema-muted text-xs font-semibold uppercase tracking-wider flex-shrink-0">Language</span>
+            <span className="text-cinema-muted text-xs font-semibold uppercase tracking-wider flex-shrink-0 w-16">Language</span>
             <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
               {LANGUAGES.map(l => <FilterPill key={l} label={l} active={activeLanguage === l} onClick={() => setActiveLanguage(l)} />)}
             </div>
           </div>
-          {/* Genre + Format row */}
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Filter className="w-3.5 h-3.5 text-cinema-muted flex-shrink-0" />
-              <span className="text-cinema-muted text-xs font-semibold uppercase tracking-wider flex-shrink-0">Genre</span>
-            </div>
+          {/* Genre row */}
+          <div className="flex items-center gap-3">
+            <span className="text-cinema-muted text-xs font-semibold uppercase tracking-wider flex-shrink-0 w-16">Genre</span>
             <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
               {GENRES.map(g => <FilterPill key={g} label={g} active={activeGenre === g} onClick={() => setActiveGenre(g)} />)}
             </div>
-            <div className="flex gap-2 overflow-x-auto border-l border-cinema-border pl-4" style={{ scrollbarWidth: 'none' }}>
+          </div>
+          {/* Format row */}
+          <div className="flex items-center gap-3">
+            <span className="text-cinema-muted text-xs font-semibold uppercase tracking-wider flex-shrink-0 w-16">Format</span>
+            <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
               {FORMATS.map(f => <FilterPill key={f} label={f} active={activeFormat === f} onClick={() => setActiveFormat(f)} />)}
             </div>
           </div>

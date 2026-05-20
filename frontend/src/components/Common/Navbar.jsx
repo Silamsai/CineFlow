@@ -113,7 +113,7 @@ export default function Navbar() {
           </button>
 
           {/* Search */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-lg mx-2">
+          <form onSubmit={handleSearch} className="hidden sm:block flex-1 max-w-lg mx-2">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cinema-muted" />
               <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
@@ -205,7 +205,7 @@ export default function Navbar() {
                   Sign In
                 </button>
                 <button onClick={() => setAuthModal({ open: true, tab: 'signup' })}
-                  className="px-4 py-1.5 text-sm font-bold bg-cinema-red hover:bg-cinema-red-dark text-white rounded-lg transition-all">
+                  className="px-4 py-1.5 text-sm font-bold bg-cinema-red hover:bg-cinema-red-dark text-white rounded-lg transition-all hidden sm:block">
                   Sign Up
                 </button>
               </div>
@@ -221,15 +221,33 @@ export default function Navbar() {
           {isMobileMenuOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               className="lg:hidden bg-cinema-dark border-t border-cinema-border overflow-hidden">
-              <div className="px-4 py-4 space-y-1">
+              <div className="px-4 py-4 space-y-3">
+                {/* Mobile Search */}
+                <form onSubmit={handleSearch} className="w-full">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cinema-muted" />
+                    <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                      placeholder="Search for movies, theaters..."
+                      className="w-full bg-cinema-card border border-cinema-border rounded-lg pl-9 pr-4 py-2 text-sm text-cinema-off-white placeholder-cinema-muted focus:outline-none focus:border-cinema-red transition-colors" />
+                  </div>
+                </form>
+
                 <button onClick={() => setShowCityModal(true)}
-                  className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-cinema-muted hover:text-cinema-off-white hover:bg-cinema-card">
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-cinema-muted hover:text-cinema-off-white hover:bg-cinema-card text-left">
                   <MapPin className="w-4 h-4 text-cinema-red" /><span className="text-sm">{selectedCity}</span>
                 </button>
-                <Link to="/movies" className="block px-3 py-2.5 rounded-lg text-sm text-cinema-muted hover:text-cinema-off-white hover:bg-cinema-card">Movies</Link>
-                {isSignedIn && <Link to="/my-bookings" className="block px-3 py-2.5 rounded-lg text-sm text-cinema-muted hover:text-cinema-off-white hover:bg-cinema-card">My Bookings</Link>}
-                {!isSignedIn && (
-                  <div className="flex gap-2 pt-2">
+                <Link to="/movies" className="block px-3 py-2 rounded-lg text-sm text-cinema-muted hover:text-cinema-off-white hover:bg-cinema-card">Movies</Link>
+                {isSignedIn ? (
+                  <>
+                    <Link to="/my-bookings" className="block px-3 py-2 rounded-lg text-sm text-cinema-muted hover:text-cinema-off-white hover:bg-cinema-card">My Bookings</Link>
+                    <Link to="/profile" className="block px-3 py-2 rounded-lg text-sm text-cinema-muted hover:text-cinema-off-white hover:bg-cinema-card">Profile</Link>
+                    <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+                      className="w-full text-left block px-3 py-2 rounded-lg text-sm text-cinema-red hover:bg-cinema-red/10">
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex gap-2 pt-2 border-t border-cinema-border/50">
                     <button onClick={() => { setAuthModal({ open: true, tab: 'login' }); setMobileMenuOpen(false); }}
                       className="flex-1 py-2 border border-cinema-border text-cinema-muted rounded-lg text-sm">Sign In</button>
                     <button onClick={() => { setAuthModal({ open: true, tab: 'signup' }); setMobileMenuOpen(false); }}
