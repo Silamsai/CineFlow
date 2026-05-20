@@ -26,6 +26,7 @@ const server = http.createServer(app);
 // ── Allowed origins (Vercel frontend + local dev) ────────────────────────────
 const ALLOWED_ORIGINS = [
   'https://cine-flow.vercel.app',           // Production Vercel frontend
+  'https://cine-flow-gold.vercel.app',      // Gold Vercel frontend
   'https://cineflow.vercel.app',            // Alternate Vercel domain (if any)
   process.env.FRONTEND_URL,                 // Any extra URL from Render env vars
   'http://localhost:5173',                  // Local Vite dev server
@@ -37,6 +38,12 @@ const corsOptions = {
     // Allow requests with no origin (e.g. Postman, server-to-server, curl)
     if (!origin) return callback(null, true);
     if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    
+    // Dynamically match any Vercel deployments/previews under the cine-flow subdomain pattern
+    if (/^https:\/\/cine-flow.*\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    
     logger.warn(`CORS blocked for origin: ${origin}`);
     callback(new Error(`CORS policy: origin ${origin} not allowed`));
   },
