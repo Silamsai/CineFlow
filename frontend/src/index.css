@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-black: 10 10 10;
+    --bg-dark: 17 17 17;
+    --bg-card: 26 26 26;
+    --border-color: 42 42 42;
+    --text-off-white: 245 245 245;
+    --text-muted: 156 163 175;
+
+    --primary-red: 229 9 20;
+    --primary-red-dark: 178 7 16;
+    --primary-red-light: 255 45 45;
+  }
+
+  html.light {
+    --bg-black: 249 250 251;
+    --bg-dark: 255 255 255;
+    --bg-card: 255 255 255;
+    --border-color: 229 231 235;
+    --text-off-white: 17 24 39;
+    --text-muted: 107 114 128;
+
+    --primary-red: 220 38 38;
+    --primary-red-dark: 153 27 27;
+    --primary-red-light: 239 68 68;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-cinema-black text-cinema-off-white font-body;
+    background-image: radial-gradient(ellipse at top, rgba(229,9,20,0.04) 0%, transparent 60%);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+  
+  html.light body {
+    background-image: radial-gradient(ellipse at top, rgba(220,38,38,0.02) 0%, transparent 60%);
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { @apply bg-cinema-dark; }
+  ::-webkit-scrollbar-thumb { @apply bg-cinema-red rounded-full; }
+}
+
+@layer components {
+  /* Primary CTA — red */
+  .btn-primary {
+    @apply bg-cinema-red hover:bg-cinema-red-dark text-white font-bold px-6 py-3 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 inline-flex items-center justify-center;
+  }
+  /* Outline — red border */
+  .btn-outline {
+    @apply border border-cinema-red text-cinema-red hover:bg-cinema-red hover:text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 inline-flex items-center justify-center;
+  }
+  /* Ghost */
+  .btn-ghost {
+    @apply text-cinema-muted hover:text-cinema-off-white px-4 py-2 rounded-lg transition-colors duration-200;
+  }
+  /* Alias kept for backwards compatibility */
+  .btn-gold { @apply btn-primary; }
+
+  /* Cards */
+  .card {
+    @apply bg-cinema-card border border-cinema-border rounded-xl overflow-hidden shadow-card transition-all duration-300 hover:border-cinema-red/30;
+  }
+
+  /* Inputs */
+  .input-field {
+    @apply bg-cinema-dark border border-cinema-border text-cinema-off-white placeholder-cinema-muted rounded-lg px-4 py-3 w-full focus:outline-none focus:border-cinema-red transition-colors duration-200;
+  }
+
+  /* Typography */
+  .section-title {
+    @apply font-display text-3xl md:text-4xl font-bold text-cinema-off-white;
+  }
+  .red-text {
+    @apply text-transparent bg-clip-text bg-red-gradient;
+  }
+  /* kept alias */
+  .gold-text { @apply red-text; }
+
+  /* Glassmorphism */
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl;
+  }
+
+  /* Shimmer skeleton */
+  .shimmer {
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+
+  /* Seat map */
+  .seat          { @apply w-8 h-7 rounded-t-lg cursor-pointer transition-all duration-150 hover:scale-110 text-xs flex items-center justify-center font-medium; }
+  .seat-available{ @apply bg-cinema-card border border-green-500/50 text-green-400 hover:bg-green-500/20; }
+  .seat-selected { @apply bg-cinema-red border border-cinema-red text-white hover:bg-cinema-red-dark; }
+  .seat-booked   { @apply bg-cinema-border border border-gray-600 text-gray-600 cursor-not-allowed hover:scale-100; }
+  .seat-vip      { @apply bg-purple-900/30 border border-purple-500/50 text-purple-400; }
+  .seat-premium  { @apply bg-blue-900/30 border border-blue-500/50 text-blue-400; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .gradient-border {
+    background: linear-gradient(var(--bg-color, #1a1a1a), var(--bg-color, #1a1a1a)) padding-box,
+                linear-gradient(135deg, #E50914, #FF2D2D) border-box;
+    border: 1px solid transparent;
+  }
+  /* Hide scrollbar but keep scroll */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 36" role="img" aria-label="MX Player">
+  <!-- "MX" orange bold -->
+  <text x="0" y="27" font-family="'Arial Black',Arial,sans-serif" font-weight="900" font-size="28" fill="#FF6F00" letter-spacing="-1">MX</text>
+  <!-- Divider line -->
+  <rect x="52" y="6" width="2" height="24" rx="1" fill="#FF6F00" opacity="0.5"/>
+  <!-- "Player" in white -->
+  <text x="58" y="24" font-family="'Arial',sans-serif" font-weight="700" font-size="16" fill="white">Player</text>
+</svg>

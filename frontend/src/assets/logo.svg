@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 32" height="32" role="img" aria-label="CineFlow logo">
+  <!-- Film reel icon box -->
+  <rect x="0" y="4" width="24" height="24" rx="5" fill="#E50914"/>
+  <!-- Film icon (simplified clapperboard dots) -->
+  <rect x="4"  y="8"  width="4" height="4" rx="1" fill="white" opacity="0.9"/>
+  <rect x="10" y="8"  width="4" height="4" rx="1" fill="white" opacity="0.9"/>
+  <rect x="16" y="8"  width="4" height="4" rx="1" fill="white" opacity="0.9"/>
+  <rect x="4"  y="14" width="16" height="10" rx="2" fill="white" opacity="0.15"/>
+  <polygon points="9,15 9,23 18,19" fill="white" opacity="0.85"/>
+
+  <!-- Wordmark: "Cine" in white -->
+  <text x="30" y="23"
+        font-family="'Inter', 'Segoe UI', Arial, sans-serif"
+        font-weight="800"
+        font-size="18"
+        letter-spacing="-0.3"
+        fill="#F5F5F1">Cine</text>
+
+  <!-- Wordmark: "Flow" in red -->
+  <text x="72" y="23"
+        font-family="'Inter', 'Segoe UI', Arial, sans-serif"
+        font-weight="800"
+        font-size="18"
+        letter-spacing="-0.3"
+        fill="#E50914">Flow</text>
+</svg>
