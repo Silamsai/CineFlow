@@ -49,32 +49,85 @@ const getAllShows = async (req, res, next) => {
     if (theaterId) filter.theaterId = theaterId;
     if (format) filter.format = format;
     if (language) filter.language = language;
+    
+    // Default to today and future if no date is specified!
     if (date) {
       const start = new Date(date); start.setHours(0, 0, 0, 0);
       const end = new Date(date); end.setHours(23, 59, 59, 999);
       filter.showTime = { $gte: start, $lte: end };
+    } else {
+      // By default, only show today's and future shows
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+      filter.showTime = { $gte: start };
     }
-    const shows = await Show.find(filter)
+
+    let shows = await Show.find(filter)
       .populate('movieId', 'title posterUrl duration rating isHouseFull')
       .populate('theaterId', 'name city location')
       .sort('showTime');
 
-    // Dynamically calculate available seats for each show
-    const showsWithSeats = [];
-    for (const show of shows) {
-      const showObj = show.toObject();
-      const seatStatus = await buildSeatStatus(show);
-      let bookedCount = 0;
-      for (const row of seatStatus) {
-        for (const seat of row) {
-          if (seat === 'booked' || seat === 'held') bookedCount++;
+    // Auto-generate dummy shows if none exist (useful for portfolio/demo)
+    if (shows.length === 0 && movieId) {
+      const Theater = require('../models/Theater');
+      const Movie = require('../models/Movie');
+      const movie = await Movie.findById(movieId);
+      if (movie && !movie.isComingSoon) {
+        const theaters = await Theater.find().limit(5); // Get a few theaters
+        const newShows = [];
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        for (let i = 0; i < 4; i++) {
+          const currentDate = new Date(today);
+          currentDate.setDate(today.getDate() + i);
+          
+          for (const theater of theaters) {
+            if (!theater.screens || theater.screens.length === 0) continue;
+            const screen = theater.screens[0];
+            const showFormat = movie.format?.[0] || '2D';
+            const showLang = movie.language?.[0] || 'Hindi';
+            
+            const showHours = [10, 14, 18, 21.5];
+            showHours.forEach(hour => {
+              const showTime = new Date(currentDate);
+              showTime.setHours(Math.floor(hour), (hour % 1) * 60, 0, 0);
+              
+              if (showTime > new Date()) {
+                const endTime = new Date(showTime);
+                endTime.setMinutes(showTime.getMinutes() + (movie.duration || 150));
+                
+                const seatStatus = Array(screen.rows).fill(null).map(() => Array(screen.columns).fill('available'));
+                newShows.push({
+                  movieId: movie._id,
+                  theaterId: theater._id,
+                  screenId: screen._id,
+                  screenName: screen.name,
+                  showTime,
+                  endTime,
+                  format: showFormat,
+                  language: showLang,
+                  totalSeats: screen.totalSeats,
+                  availableSeats: screen.totalSeats,
+                  pricing: screen.pricing,
+                  seatStatus,
+                  heldSeats: [],
+                });
+              }
+            });
+          }
+        }
+        if (newShows.length > 0) {
+          await Show.insertMany(newShows);
+          shows = await Show.find(filter)
+            .populate('movieId', 'title posterUrl duration rating isHouseFull')
+            .populate('theaterId', 'name city location')
+            .sort('showTime');
         }
       }
-      showObj.availableSeats = Math.max(0, show.totalSeats - bookedCount);
-      showsWithSeats.push(showObj);
     }
 
-    res.json({ success: true, data: showsWithSeats });
+    res.json({ success: true, data: shows });
   } catch (error) { next(error); }
 };
 
