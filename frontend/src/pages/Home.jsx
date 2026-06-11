@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, ChevronRight, Filter, Flame, Sparkles, Film, Tv2, Loader2, MapPin } from 'lucide-react';
+import { Star, ChevronRight, Filter, Flame, Sparkles, Film, Tv2, Loader2, MapPin, Ticket, Play } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { movieService } from '../services';
 import { LANGUAGES, GENRES, FORMATS } from '../data/mockMovies';
 import { useUIStore } from '../store';
+import LiquidButton from '../components/Effects/LiquidButton';
+import PerspectiveTilt from '../components/Effects/PerspectiveTilt';
 
 // ── OTT logo imports (local SVGs — never break, no CORS issues) ──────────────
 import logoNetflix from '../assets/ott/netflix.svg';
@@ -184,9 +186,9 @@ export default function Home() {
             <p className="text-cinema-muted text-base md:text-lg max-w-md mb-6">
               Now showing the best blockbusters in <strong className="text-cinema-off-white">{selectedCity}</strong>. Pick your seats and enjoy the show!
             </p>
-            <Link to="/movies" className="inline-flex items-center gap-2 bg-cinema-red hover:bg-cinema-red-dark text-white font-bold px-8 py-3 rounded-full transition-all transform hover:scale-105 text-sm">
-              Explore All Movies <ChevronRight className="w-4 h-4" />
-            </Link>
+            <LiquidButton size="lg" onClick={() => window.location.href = '/movies'}>
+              <Play className="w-4 h-4" /> Explore All Movies <ChevronRight className="w-4 h-4" />
+            </LiquidButton>
           </motion.div>
         </div>
 
@@ -295,7 +297,11 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {hotMovies.map((movie, i) => <MovieCard key={movie._id} movie={movie} index={i} />)}
+            {hotMovies.map((movie, i) => (
+              <PerspectiveTilt key={movie._id} maxTilt={6} scale={1.01}>
+                <MovieCard movie={movie} index={i} />
+              </PerspectiveTilt>
+            ))}
           </div>
         </section>
 
@@ -319,7 +325,11 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {filtered.map((movie, i) => <MovieCard key={movie._id} movie={movie} index={i} />)}
+              {filtered.map((movie, i) => (
+                <PerspectiveTilt key={movie._id} maxTilt={6} scale={1.01}>
+                  <MovieCard movie={movie} index={i} />
+                </PerspectiveTilt>
+              ))}
             </div>
           )}
         </section>

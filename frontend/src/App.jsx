@@ -4,6 +4,7 @@ import { useAuthContext } from './context/AuthContext';
 import Navbar from './components/Common/Navbar';
 import Footer from './components/Common/Footer';
 import { PageLoader } from './components/Common/LoadingSpinner';
+import FilmReel from './components/Effects/FilmReel';
 import { MOCK_MOVIES } from './data/mockMovies';
 import { useUIStore } from './store';
 
@@ -51,6 +52,7 @@ function PublicLayout({ children }) {
   return (
     <div className="min-h-screen flex flex-col bg-cinema-black">
       <Navbar />
+      <FilmReel />
       <div className="flex-1">{children}</div>
       <Footer />
     </div>

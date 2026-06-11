@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Menu, X, MapPin, ChevronDown, Globe, LogOut, User, Ticket, Sun, Moon } from 'lucide-react';
+import { Search, Menu, X, MapPin, ChevronDown, Globe, LogOut, User, Ticket, Sun, Moon, Film } from 'lucide-react';
 import { useAuthContext } from '../../context/AuthContext';
 import { useUIStore } from '../../store';
 import { CITIES, LANGUAGES } from '../../data/mockMovies';
 import AuthModal from './AuthModal';
 import Logo from './Logo';
+import LiquidButton from '../Effects/LiquidButton';
 
 function CityModal({ onClose, onSelect, current, canClose = true }) {
   const [search, setSearch] = useState('');
@@ -97,7 +98,7 @@ export default function Navbar() {
       <AuthModal isOpen={authModal.open} defaultTab={authModal.tab} onClose={() => setAuthModal({ open: false, tab: 'login' })} />
       <AnimatePresence>{showCityModal && <CityModal current={selectedCity} onClose={() => setShowCityModal(false)} onSelect={setSelectedCity} canClose={hasSelectedCity} />}</AnimatePresence>
 
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-cinema-black/98 backdrop-blur-md shadow-lg' : 'bg-cinema-black'} border-b border-cinema-border`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-cinema-black/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.5)] border-b border-white/5' : 'bg-cinema-black/50 backdrop-blur-sm border-b border-transparent'}`}>
         <div className="max-w-screen-2xl mx-auto px-4 flex items-center h-14 gap-3">
           {/* Logo */}
           <Link to="/" className="flex items-center mr-2 flex-shrink-0" aria-label="Go to home">
@@ -200,14 +201,12 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <button onClick={() => setAuthModal({ open: true, tab: 'login' })}
-                  className="px-4 py-1.5 text-sm font-semibold text-cinema-off-white border border-cinema-border rounded-lg hover:border-cinema-red/50 hover:text-cinema-red transition-all hidden sm:block">
+                <LiquidButton variant="glass" size="sm" onClick={() => setAuthModal({ open: true, tab: 'login' })} className="hidden sm:inline-flex">
                   Sign In
-                </button>
-                <button onClick={() => setAuthModal({ open: true, tab: 'signup' })}
-                  className="px-4 py-1.5 text-sm font-bold bg-cinema-red hover:bg-cinema-red-dark text-white rounded-lg transition-all hidden sm:block">
+                </LiquidButton>
+                <LiquidButton size="sm" onClick={() => setAuthModal({ open: true, tab: 'signup' })} className="hidden sm:inline-flex">
                   Sign Up
-                </button>
+                </LiquidButton>
               </div>
             )}
             <button className="lg:hidden p-1.5 text-cinema-muted" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}>

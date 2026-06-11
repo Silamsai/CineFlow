@@ -1,9 +1,10 @@
 import { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Play, Ticket, ChevronDown, Star, LogIn } from 'lucide-react';
+import { Play, Ticket, ChevronDown, Star, LogIn, ArrowRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import { useAuthContext } from '../../context/AuthContext';
+import LiquidButton from '../Effects/LiquidButton';
 
 function FilmReel() {
   return (
@@ -114,25 +115,25 @@ export default function HeroSection() {
             </motion.p>
 
             <motion.div variants={itemVariants} className="flex flex-wrap gap-4 mb-12">
-              <Link to="/movies" className="btn-primary flex items-center gap-2 text-base px-8 py-4">
-                <Play className="w-5 h-5" /> Browse Movies
-              </Link>
+              <LiquidButton size="xl" onClick={() => window.location.href = '/movies'}>
+                <Play className="w-5 h-5" /> Browse Movies <ArrowRight className="w-4 h-4" />
+              </LiquidButton>
               {!isSignedIn ? (
                 SignInButton ? (
                   <SignInButton mode="modal">
-                    <button className="btn-outline flex items-center gap-2 text-base px-8 py-4">
+                    <LiquidButton variant="glass" size="xl">
                       <LogIn className="w-5 h-5" /> Sign In to Book
-                    </button>
+                    </LiquidButton>
                   </SignInButton>
                 ) : (
-                  <Link to="/movies" className="btn-outline flex items-center gap-2 text-base px-8 py-4">
+                  <LiquidButton variant="glass" size="xl" onClick={() => window.location.href = '/movies'}>
                     <Ticket className="w-5 h-5" /> Book Now
-                  </Link>
+                  </LiquidButton>
                 )
               ) : (
-                <Link to="/my-bookings" className="btn-outline flex items-center gap-2 text-base px-8 py-4">
+                <LiquidButton variant="glass" size="xl" onClick={() => window.location.href = '/my-bookings'}>
                   <Ticket className="w-5 h-5" /> My Tickets
-                </Link>
+                </LiquidButton>
               )}
             </motion.div>
 

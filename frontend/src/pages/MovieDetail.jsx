@@ -1,12 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Star, Clock, Calendar, Film, Play, ChevronLeft, Heart, Loader2, Ticket, AlertTriangle, MapPin, Globe } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Star, Clock, Calendar, Film, Play, ChevronLeft, Heart, Loader2, Ticket, AlertTriangle, MapPin, Globe, ArrowRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { movieService, showService } from '../services';
 import { useAuthContext } from '../context/AuthContext';
 import { useUIStore } from '../store';
 import toast from 'react-hot-toast';
+import LiquidButton from '../components/Effects/LiquidButton';
+import PerspectiveTilt from '../components/Effects/PerspectiveTilt';
+import TheaterDoors from '../components/Effects/TheaterDoors';
 
 function formatDuration(min) {
   const h = Math.floor(min / 60), m = min % 60;
@@ -21,6 +24,7 @@ export default function MovieDetail() {
   const [showAuthHint, setShowAuthHint] = useState(false);
   const [activeShowLang, setActiveShowLang] = useState('All');
   const [activeShowFormat, setActiveShowFormat] = useState('All');
+  const [theaterDoorShow, setTheaterDoorShow] = useState(null);
 
   const { data: movieRes, isLoading: movieLoading } = useQuery({
     queryKey: ['movie', id],
@@ -119,7 +123,12 @@ export default function MovieDetail() {
         pricing: show.pricing,
       },
     }));
-    navigate(`/booking/${show._id}`);
+    // Trigger theater doors animation
+    setTheaterDoorShow(show);
+  };
+
+  const handleTheaterDoorsClose = () => {
+    setTheaterDoorShow(null);
   };
 
   const isFavoriteMovie = user?.favoriteMovies?.some(m => m.id === movie._id);
@@ -153,6 +162,17 @@ export default function MovieDetail() {
 
   return (
     <main className="pt-14 pb-16 min-h-screen bg-cinema-black">
+      {/* Theater Doors Overlay */}
+      <AnimatePresence>
+        {theaterDoorShow && (
+          <TheaterDoors
+            movie={movie}
+            show={theaterDoorShow}
+            onClose={handleTheaterDoorsClose}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Hero banner */}
       <div className="relative h-64 md:h-80 overflow-hidden">
         <img src={movie.posterUrl.replace('300/450', '1200/400')} alt={movie.title}
@@ -172,9 +192,9 @@ export default function MovieDetail() {
               <img src={movie.posterUrl} alt={movie.title} className="w-full aspect-[2/3] object-cover"
                 onError={e => { e.target.src = `https://placehold.co/300x450/1a1a1a/E50914?text=${encodeURIComponent(movie.title)}`; }} />
             </motion.div>
-            <button className="btn-outline w-full max-w-xs mx-auto lg:max-w-none mt-3 flex items-center justify-center gap-2 text-sm">
-              <Play className="w-4 h-4 fill-current" /> Watch Trailer
-            </button>
+            <LiquidButton variant="outline" size="md" className="w-full max-w-xs mx-auto lg:max-w-none mt-3">
+              <Play className="w-4 h-4" /> Watch Trailer
+            </LiquidButton>
           </div>
 
           {/* Details */}
@@ -335,39 +355,41 @@ export default function MovieDetail() {
                 ) : (
                   <div className="space-y-3">
                     {filteredShows.map(show => (
-                      <div key={show._id} className="border border-cinema-border rounded-xl p-4 hover:border-cinema-red/40 transition-all">
-                        <div className="flex items-center justify-between mb-3">
-                          <div>
-                            <p className="text-cinema-off-white font-semibold text-sm">{show.theaterId?.name}</p>
-                            <p className="text-cinema-muted text-xs mt-0.5">{show.format} • {show.language}</p>
+                      <PerspectiveTilt key={show._id} maxTilt={3} scale={1.005} glare={false}>
+                        <div className="border border-cinema-border rounded-xl p-4 hover:border-cinema-red/40 transition-all bg-cinema-dark/50">
+                          <div className="flex items-center justify-between mb-3">
+                            <div>
+                              <p className="text-cinema-off-white font-semibold text-sm">{show.theaterId?.name}</p>
+                              <p className="text-cinema-muted text-xs mt-0.5">{show.format} • {show.language}</p>
+                            </div>
+                            {movie.isHouseFull || show.availableSeats === 0 ? (
+                              <span className="text-xs px-2.5 py-1 rounded-full font-semibold text-red-500 bg-red-500/10 uppercase tracking-wider animate-pulse">
+                                House Full
+                              </span>
+                            ) : (
+                              <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${show.availableSeats < 10 ? 'text-red-400 bg-red-400/10' : show.availableSeats < 50 ? 'text-yellow-400 bg-yellow-400/10' : 'text-green-400 bg-green-400/10'}`}>
+                                {show.availableSeats} seats left
+                              </span>
+                            )}
                           </div>
-                          {movie.isHouseFull || show.availableSeats === 0 ? (
-                            <span className="text-xs px-2.5 py-1 rounded-full font-semibold text-red-500 bg-red-500/10 uppercase tracking-wider animate-pulse">
-                              House Full
-                            </span>
-                          ) : (
-                            <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${show.availableSeats < 10 ? 'text-red-400 bg-red-400/10' : show.availableSeats < 50 ? 'text-yellow-400 bg-yellow-400/10' : 'text-green-400 bg-green-400/10'}`}>
-                              {show.availableSeats} seats left
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="text-cinema-muted text-xs">
-                            ₹{show.pricing?.standard} – ₹{show.pricing?.vip}
+                          <div className="flex items-center justify-between">
+                            <div className="text-cinema-muted text-xs">
+                              ₹{show.pricing?.standard} – ₹{show.pricing?.vip}
+                            </div>
+                            {movie.isHouseFull || show.availableSeats === 0 ? (
+                              <button disabled
+                                className="bg-zinc-850 text-cinema-muted font-bold text-sm px-5 py-2 rounded-lg cursor-not-allowed border border-cinema-border/50">
+                                Sold Out
+                              </button>
+                            ) : (
+                              <LiquidButton size="sm" onClick={() => handleBookShow(show)}>
+                                <Ticket className="w-3 h-3" />
+                                {new Date(show.showTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </LiquidButton>
+                            )}
                           </div>
-                          {movie.isHouseFull || show.availableSeats === 0 ? (
-                            <button disabled
-                              className="bg-zinc-850 text-cinema-muted font-bold text-sm px-5 py-2 rounded-lg cursor-not-allowed border border-cinema-border/50">
-                              Sold Out
-                            </button>
-                          ) : (
-                            <button onClick={() => handleBookShow(show)}
-                              className="bg-cinema-red hover:bg-cinema-red-dark text-white font-bold text-sm px-5 py-2 rounded-lg transition-all flex items-center gap-2 animate-pulse-subtle">
-                              {new Date(show.showTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </button>
-                          )}
                         </div>
-                      </div>
+                      </PerspectiveTilt>
                     ))}
                   </div>
                 )}
@@ -381,13 +403,15 @@ export default function MovieDetail() {
           <h2 className="font-display text-2xl font-bold text-cinema-off-white mb-5">More Like This</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
             {recommended.map(m => (
-              <Link key={m._id} to={`/movies/${m._id}`} className="group">
-                <div className="rounded-xl overflow-hidden aspect-[2/3] bg-cinema-card">
-                  <img src={m.posterUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    onError={e => { e.target.src = `https://placehold.co/300x450/1a1a1a/E50914?text=${encodeURIComponent(m.title[0])}`; }} />
-                </div>
-                <p className="text-cinema-off-white text-xs font-medium mt-2 truncate group-hover:text-cinema-red transition-colors">{m.title}</p>
-              </Link>
+              <PerspectiveTilt key={m._id} maxTilt={5} scale={1.01}>
+                <Link to={`/movies/${m._id}`} className="group block">
+                  <div className="rounded-xl overflow-hidden aspect-[2/3] bg-cinema-card">
+                    <img src={m.posterUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={e => { e.target.src = `https://placehold.co/300x450/1a1a1a/E50914?text=${encodeURIComponent(m.title[0])}`; }} />
+                  </div>
+                  <p className="text-cinema-off-white text-xs font-medium mt-2 truncate group-hover:text-cinema-red transition-colors">{m.title}</p>
+                </Link>
+              </PerspectiveTilt>
             ))}
           </div>
         </section>

@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Info, Loader2 } from 'lucide-react';
+import { ChevronLeft, Info, Loader2, Ticket, Star } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { showService } from '../services';
+import LiquidButton from '../components/Effects/LiquidButton';
 
 const ROWS = ['A','B','C','D','E','F','G','H','I','J'];
 const COLS = 12;
@@ -117,8 +118,35 @@ export default function Booking() {
   });
 
   return (
-    <main className="min-h-screen bg-cinema-black pt-14 pb-10">
-      <div className="max-w-5xl mx-auto px-4 py-6">
+    <main className="min-h-screen bg-cinema-black pt-14 pb-10 relative overflow-hidden">
+      {/* Theater ambience background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-cinema-red/5 to-transparent" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cinema-red/3 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cinema-red/3 rounded-full blur-3xl" />
+        {/* Theater wall pattern */}
+        <div className="absolute inset-0 opacity-[0.02]"
+          style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 40px, #E50914 40px, #E50914 41px), repeating-linear-gradient(0deg, transparent, transparent 40px, #E50914 40px, #E50914 41px)' }} />
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 py-6 relative z-10">
+        {/* Curtain top decoration */}
+        <div className="relative h-12 mb-6 overflow-hidden rounded-t-2xl">
+          <div className="absolute inset-0 bg-gradient-to-r from-cinema-red/80 via-cinema-red to-cinema-red/80" />
+          <div className="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-b from-transparent to-black/30" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div key={i}
+                className="h-full w-8 bg-gradient-to-b from-black/10 to-transparent"
+                style={{ margin: '0 -1px' }}
+              />
+            ))}
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-white/10 text-xs uppercase tracking-[0.3em] font-semibold">CineFlow</span>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <button onClick={() => navigate(-1)} className="p-2 rounded-lg border border-cinema-border text-cinema-muted hover:text-cinema-off-white hover:border-cinema-red transition-all">
@@ -130,10 +158,17 @@ export default function Booking() {
           </div>
         </div>
 
-        {/* Screen */}
+        {/* Screen with curtain effect */}
         <div className="text-center mb-8">
-          <div className="w-3/4 mx-auto h-2 bg-gradient-to-r from-transparent via-cinema-red/60 to-transparent rounded-full mb-1" />
-          <p className="text-cinema-muted text-xs uppercase tracking-widest">Screen this way</p>
+          <div className="relative">
+            {/* Curtain drapes sides */}
+            <div className="absolute -left-4 top-0 bottom-0 w-8 bg-gradient-to-r from-cinema-red/40 to-transparent rounded-l-full" />
+            <div className="absolute -right-4 top-0 bottom-0 w-8 bg-gradient-to-l from-cinema-red/40 to-transparent rounded-r-full" />
+            {/* Screen glow */}
+            <div className="w-3/4 mx-auto h-1 bg-gradient-to-r from-transparent via-cinema-red/80 to-transparent rounded-full mb-1 shadow-[0_0_20px_rgba(229,9,20,0.3)]" />
+            <div className="w-2/3 mx-auto h-0.5 bg-gradient-to-r from-transparent via-cinema-red/40 to-transparent rounded-full mb-1" />
+          </div>
+          <p className="text-cinema-muted text-xs uppercase tracking-widest mt-2">Screen this way</p>
         </div>
 
         {/* Seat Map */}
@@ -219,10 +254,9 @@ export default function Booking() {
                 <p className="text-cinema-red font-bold text-xl">₹{total}</p>
               </div>
             )}
-            <button onClick={handleProceed} disabled={!selectedSeats.length}
-              className="flex-1 sm:flex-initial bg-cinema-red hover:bg-cinema-red-dark text-white font-bold px-8 py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed text-center">
-              Proceed to Pay
-            </button>
+            <LiquidButton size="md" onClick={handleProceed} disabled={!selectedSeats.length} className="flex-1 sm:flex-initial">
+              <Ticket className="w-4 h-4" /> Proceed to Pay
+            </LiquidButton>
           </div>
         </div>
       </div>
